@@ -12,14 +12,27 @@ public class Environment {
 	private final int goalReward;
 	private final int cliffReward;
 	private final int stepReward;
+	private final Position startPosition;
+	private final Position goalPosition;
 	private final Random rd = new Random();
 
-	public Environment(Integer[][] actualMap, int goalReward, int cliffReward, int stepReward) {
+	public Environment(Integer[][] actualMap, int goalReward, int cliffReward, int stepReward, Position startPosition,
+			Position goalPosition) {
 		super();
 		this.actualMap = actualMap;
 		this.goalReward = goalReward;
 		this.cliffReward = cliffReward;
 		this.stepReward = stepReward;
+		this.startPosition = startPosition;
+		this.goalPosition = goalPosition;
+	}
+
+	public Position getStartPosition() {
+		return startPosition;
+	}
+
+	public Position getGoalPosition() {
+		return goalPosition;
 	}
 
 	public int[] getDeterminismus() {
@@ -52,7 +65,7 @@ public class Environment {
 		return stepReward;
 	}
 
-	public Position doStep(Position pos, int direction) {
+	public ReturnValue doStep(Position pos, int direction) {
 		int randomValue = rd.nextInt(100);
 		if (randomValue > determinismus[0] + determinismus[1] + determinismus[2]) {
 			direction = 3;
@@ -61,14 +74,31 @@ public class Environment {
 		} else if (randomValue > determinismus[0]) {
 			direction = 1;
 		}
+		Position newPosition = null;
 		switch (direction) {
 		case (0):
-			return Position.getField(pos.getX(), pos.getY() - 1);
+			newPosition = Position.getField(pos.getX(), pos.getY() - 1);
+			break;
 		case (1):
-			return Position.getField(pos.getX() + 1, pos.getY());
+			newPosition = Position.getField(pos.getX() + 1, pos.getY());
+			break;
 		case (2):
-			return Position.getField(pos.getX(), pos.getY() + 1);
+			newPosition = Position.getField(pos.getX(), pos.getY() + 1);
+			break;
+		case (3):
+			newPosition = Position.getField(pos.getX() - 1, pos.getY());
+			break;
 		}
-		return Position.getField(pos.getX() - 1, pos.getY());
+		int returnValue = stepReward;
+		if (actualMap.length <= newPosition.getX() || actualMap[newPosition.getX()].length <= newPosition.getY()) {
+			newPosition = pos;
+		} else if (actualMap[newPosition.getX()][newPosition.getY()] == -1) {
+			newPosition = startPosition;
+			returnValue = cliffReward;
+		} else if (newPosition.equals(goalPosition)) {
+			returnValue = goalReward;
+		}
+		return new ReturnValue(returnValue, newPosition);
+
 	}
 }
