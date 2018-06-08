@@ -5,13 +5,13 @@ import java.util.Set;
 
 public class State {
 
-	private final int[] qValues = new int[4];
+	private final double[] qValues = new double[4];
 
-	public int[] getqValues() {
+	public double[] getqValues() {
 		return qValues;
 	}
 
-	public void setValue(int index, int value) {
+	public void setValue(int index, double value) {
 		qValues[index] = value;
 	}
 
