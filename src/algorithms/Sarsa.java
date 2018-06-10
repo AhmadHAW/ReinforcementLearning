@@ -1,12 +1,15 @@
 package algorithms;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import Fachwerte.Position;
+import Fachwerte.State;
 
 public class Sarsa extends ReinforcementLearningAlgorithm {
 
 	public Sarsa(double gamma, double alpha, Position startPosition, Position goalPosition, int repeats) {
+		//super(gamma, alpha, goalPosition, repeats, null);
 		super(gamma, alpha, startPosition, goalPosition, repeats);
 	}
 
@@ -39,7 +42,7 @@ public class Sarsa extends ReinforcementLearningAlgorithm {
 
 	@Override
 	public void reset() {
-		mapOfAgent = new ArrayList<>();
+		mapOfAgent = (Map<Position, State>) new ArrayList<>();
 		actualPosition = startPosition;
 		bestResult = -Double.MAX_VALUE;
 		bestSteps = Integer.MAX_VALUE;

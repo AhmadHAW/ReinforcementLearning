@@ -21,8 +21,8 @@ public class CsvHelper {
 
     public static void main(String[] args) throws Exception {
         readWithCsvListReader();
-        readWithCsvMapReader();
-        writeWithCsvListWriter();
+        //readWithCsvMapReader();
+        //writeWithCsvListWriter();
         writeWithCsvMapWriter();
     }
 
@@ -35,17 +35,17 @@ public class CsvHelper {
     private static CellProcessor[] getProcessors() {
 
         final CellProcessor[] processors = new CellProcessor[] {
-                new UniqueHashCode(), // id (must be unique)
-                new ParseInt(), // x
-                new ParseInt(), // y
-                new ParseDouble(), // value
+                new Optional(), // constructor_parameter
+                new Optional(), // avg_runtime
+                new Optional(), // avg_reward
+                new Optional(), // best_reward
                 new Optional(), // text
         };
         return processors;
     }
 
     private static String[] getHeader() {
-        return new String[] { "id", "x", "y", "value", "text" };
+        return new String[] { "constructor_parameter", "avg_runtime", "avg_reward", "best_reward", "text" };
     }
 
     /**
@@ -107,8 +107,8 @@ public class CsvHelper {
     private static void writeWithCsvListWriter() throws Exception {
 
         // create the customer Lists (CsvListWriter also accepts arrays!)
-        final List<Object> firstRow = Arrays.asList(new Object[] { 1, 3, 15, 35.32, "test text 1"});
-        final List<Object> secondRow = Arrays.asList(new Object[] { 2, 1, 0, 111.324, "test text 2"});
+        final List<Object> firstRow = Arrays.asList(new Object[] { "arg1,arg2,arg3", 367, -4.2, 2.2, "q"});
+        final List<Object> secondRow = Arrays.asList(new Object[] { "arg1,arg2,arg3", 4141, 1.33, 8.65, "s"});
 
         ICsvListWriter listWriter = null;
         try {
@@ -141,19 +141,19 @@ public class CsvHelper {
         final String[] header = getHeader();
 
         // create the customer Maps (using the header elements for the column keys)
-        final Map<String, Object> firstRow = new HashMap<String, Object>();
-        firstRow.put(header[0], 1);
-        firstRow.put(header[1], 21);
-        firstRow.put(header[2], 11);
-        firstRow.put(header[3], 41.33);
-        firstRow.put(header[4], "map test text 1");
+        final Map<String, Object> firstRow = new HashMap<>();
+        firstRow.put(header[0], "arg1,arg2,arg3");
+        firstRow.put(header[1], 367);
+        firstRow.put(header[2], -4.2);
+        firstRow.put(header[3], 2.2);
+        firstRow.put(header[4], "q");
 
-        final Map<String, Object> secondRow = new HashMap<String, Object>();
-        secondRow.put(header[0], 2);
-        secondRow.put(header[1], 1);
-        secondRow.put(header[2], 1);
-        secondRow.put(header[3], 401.3366);
-        secondRow.put(header[4], "map test text 2");
+        final Map<String, Object> secondRow = new HashMap<>();
+        secondRow.put(header[0], "arg1,arg2,arg3");
+        secondRow.put(header[1], 4141);
+        secondRow.put(header[2], 1.33);
+        secondRow.put(header[3], 8.65);
+        secondRow.put(header[4], "s");
 
         ICsvMapWriter mapWriter = null;
         try {
