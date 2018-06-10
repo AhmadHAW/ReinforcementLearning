@@ -5,7 +5,7 @@ import java.util.Random;
 import Fachwerte.Position;
 
 public class Environment {
-	// pos 0 = actionToGo, pos 1 = left, pos2 = right, pos 3 =
+	// pos0 = actionToGo, pos1 = left, pos2 = right, pos3 =
 	// oppositeDirectionToGo
 	private final int[] determinismus;
 	// -1 = cliff, 0 = normalField, +1 = goal
@@ -72,14 +72,19 @@ public class Environment {
 		return stepReward;
 	}
 
+	// pos0 = actionToGo, pos1 = left, pos2 = right, pos3 =
+	// oppositeDirectionToGo
+	// -1 = cliff, 0 = normalField, +1 = goal
 	public ReturnValue doStep(Position pos, int direction) {
 		int randomValue = rd.nextInt(100);
-		if (randomValue > determinismus[0] + determinismus[1] + determinismus[2]) {
-			direction = 3;
-		} else if (randomValue > determinismus[0] + determinismus[1]) {
-			direction = 2;
-		} else if (randomValue > determinismus[0]) {
-			direction = 1;
+		if (randomValue < determinismus[0]) {
+
+		} else if (randomValue < determinismus[1]) {
+			direction = (direction + 3) % 3;
+		} else if (randomValue < determinismus[2]) {
+			direction = (direction + 1) % 3;
+		} else {
+			direction = (direction + 2) % 3;
 		}
 		Position newPosition = null;
 		switch (direction) {
@@ -97,13 +102,17 @@ public class Environment {
 			break;
 		}
 		double returnValue = 0;
-		if (newPosition.getX() < 0 || newPosition.getY() < 0 || actualMap.length <= newPosition.getX()
-				|| actualMap[newPosition.getX()].length <= newPosition.getY()) {
+		int x = newPosition.getX();
+		int y = newPosition.getY();
+		// wall
+		if (x < 0 || y < 0 || x >= actualMap.length || y >= actualMap[x].length) {
 			newPosition = pos;
-		} else if (actualMap[newPosition.getX()][newPosition.getY()] == -1) {
+			// cliff
+		} else if (actualMap[x][y] == -1) {
 			newPosition = startPosition;
 			returnValue = cliffReward;
-		} else if (actualMap[newPosition.getX()][newPosition.getY()] == 1) {
+			// goal
+		} else if (actualMap[x][y] == 1) {
 			returnValue = goalReward;
 		}
 		return new ReturnValue(returnValue, newPosition);
