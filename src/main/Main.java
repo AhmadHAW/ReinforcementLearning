@@ -40,17 +40,17 @@ public class Main {
 		int[][] actualMap = { { 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, -1 }, { 0, 0, 0, 0, -1 }, { 0, 0, 0, 0, -1 },
 				{ 0, 0, 0, 0, 1 } };
 
-		int[][] determinismusList = { { 100, 0, 0, 0 }, { 97, 1, 1, 1 }, { 85, 5, 5, 5 }, { 70, 15, 15, 0 },
-				{ 70, 10, 10, 10 }, { 25, 25, 25, 25 }, { 0, 15, 15, 70 } };
+		int[][] determinismusList = { /*{ 100, 0, 0, 0 },*/ /*{ 97, 1, 1, 1 }, { 85, 5, 5, 5 }, */{ 70, 15, 15, 0 },/*
+				{ 70, 10, 10, 10 }, { 25, 25, 25, 25 }, {50, 25, 25, 0 },*/ { 0, 15, 15, 70 } };
 		double[] goalRewards = { 100, 1000, 0, -100, -10000000, 10000000 };
-		double[] cliffRewards = { -100, -0.000001, -1, -10000000 };
-		double[] stepRewards = { -100, -0.0000001, -100, -10000000 };
+		double[] cliffRewards = { -100, /*-0.000001,*/ -1, -10000000 };
+		double[] stepRewards = { -100, /*-0.0000001,*/ -100, -10000000 };
 		double[] gammas = { 0.7d, 0.4d, 0.99d, 0.01d };
 		double[] alphas = { 0.7d, 0.4d, 0.99d, 0.01d };
 		tests = determinismusList.length * goalRewards.length * cliffRewards.length * stepRewards.length * gammas.length
 				* alphas.length;
 		doTestQLearning(actualMap, determinismusList, Position.getField(0, 4), goalRewards, cliffRewards, stepRewards,
-				gammas, alphas, 500, 10);
+				gammas, alphas, 10, 20);
 	}
 
 	private static void doTestQLearning(int[][] actualMap, int[][] determinismusList, Position startingPosition,
