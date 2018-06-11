@@ -26,8 +26,8 @@ public class Main {
 			new Optional(), // goalReward
 			new Optional(), // CliffReward
 			new Optional(), // StepReward
-			new Optional(), // Gamma
-			new Optional(), // Alpha
+			new Optional(), // Gamma -> Discount Rate
+			new Optional(), // Alpha -> Learn Rate
 			new Optional(), // avg_Episodes_Until_Trained
 			new Optional(), // Best Episodes Until Trained
 			new Optional(), // Average Steps Once Trained
