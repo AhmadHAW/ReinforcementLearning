@@ -73,7 +73,7 @@ public class Sarsa extends ReinforcementLearningAlgorithm {
 	}
 
 	@Override
-	protected boolean doEpisodeWithoutTraining() {
+	public boolean doEpisodeWithoutTraining() {
 		actualPosition = startPosition;
 		nextReturnValue = environment.doStep(startPosition, rd.nextInt(4));
 		while (!actualPosition.equals(goalPosition)) {
