@@ -1,0 +1,2 @@
+Algorithm;Average Episodes Until Trained;Best Episodes Until Trained;Average Steps Once Trained;Best Steps Once Trained;Best Path Once Trained
+QLearning;72;11;62;6;6
