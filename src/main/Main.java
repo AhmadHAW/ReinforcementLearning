@@ -1,27 +1,26 @@
 package main;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-
+import Environment.Environment;
+import Fachwerte.Position;
+import algorithms.QLearning;
+import algorithms.ReinforcementLearningAlgorithm;
 import org.supercsv.cellprocessor.Optional;
 import org.supercsv.cellprocessor.ift.CellProcessor;
 import org.supercsv.io.CsvListWriter;
 import org.supercsv.io.ICsvListWriter;
 import org.supercsv.prefs.CsvPreference;
 
-import Environment.Environment;
-import Fachwerte.Position;
-import algorithms.QLearning;
-import algorithms.ReinforcementLearningAlgorithm;
-import algorithms.Sarsa;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 public class Main {
 	private static final String[] HEADER = { "Algorithm", "Determinismus", "GoalReward", "CliffReward", "StepReward",
 			"Gamma", "Alpha", "Average Episodes Until Trained", "Best Episodes Until Trained",
 			"Average Steps Once Trained", "Best Steps Once Trained", "Best Path Once Trained" };
-	private static final String CSV_FILENAME = "C:\\Users\\Ahmad\\Documents\\Studium\\SS18\\ISP-3\\result";
+	private static final String CSV_FILENAME = "src/testResults/result-" + System.currentTimeMillis() + ".csv";
 	private static final CellProcessor[] processors = new CellProcessor[] { new Optional(), // Algortihm
 			new Optional(), // Determinismus
 			new Optional(), // goalReward
@@ -60,23 +59,18 @@ public class Main {
 		int test = 0;
 		ICsvListWriter listWriter = null;
 		try {
-			listWriter = new CsvListWriter(new FileWriter(CSV_FILENAME + ".csv", true),
-					CsvPreference.EXCEL_NORTH_EUROPE_PREFERENCE);
+            File outputFile = new File(CSV_FILENAME);
+            outputFile.createNewFile();
+		    listWriter = new CsvListWriter(new FileWriter(CSV_FILENAME, true),
+                    CsvPreference.EXCEL_NORTH_EUROPE_PREFERENCE);
 
-			// write the header
-			listWriter.writeHeader(HEADER);
+            // write the header
+            listWriter.writeHeader(HEADER);
 		} catch (IOException e) {
 			System.out.println(e);
 			e.printStackTrace();
 		} finally {
-			if (listWriter != null) {
-				try {
-					listWriter.close();
-				} catch (IOException e) {
-					System.out.println(e);
-					e.printStackTrace();
-				}
-			}
+			closeWriter(listWriter);
 		}
 		for (int[] determinismus : determinismusList) {
 			for (double goalReward : goalRewards) {
@@ -130,7 +124,7 @@ public class Main {
 								// bestPath);
 								listWriter = null;
 								try {
-									listWriter = new CsvListWriter(new FileWriter(CSV_FILENAME + ".csv", true),
+									listWriter = new CsvListWriter(new FileWriter(CSV_FILENAME, true),
 											CsvPreference.EXCEL_NORTH_EUROPE_PREFERENCE);
 									String det = "" + determinismus[0] + ", " + determinismus[1] + ", "
 											+ determinismus[2] + ", " + determinismus[3];
@@ -144,14 +138,7 @@ public class Main {
 									System.out.println(e);
 									e.printStackTrace();
 								} finally {
-									if (listWriter != null) {
-										try {
-											listWriter.close();
-										} catch (IOException e) {
-											System.out.println(e);
-											e.printStackTrace();
-										}
-									}
+									closeWriter(listWriter);
 								}
 								++test;
 							}
@@ -161,6 +148,17 @@ public class Main {
 			}
 		}
 
+	}
+
+	private static void closeWriter(ICsvListWriter listWriter) {
+		if (listWriter != null) {
+			try {
+				listWriter.close();
+			} catch (IOException e) {
+				System.out.println(e);
+				e.printStackTrace();
+			}
+		}
 	}
 
 }
