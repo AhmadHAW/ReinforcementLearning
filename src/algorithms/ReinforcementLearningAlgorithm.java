@@ -12,8 +12,8 @@ import Fachwerte.State;
 
 public abstract class ReinforcementLearningAlgorithm {
 
-	protected final double gamma;
-	protected final double alpha;
+	protected final double gamma; // discount rate
+	protected final double alpha; // learn rate
 	protected Map<Position, State> mapOfAgent = new HashMap<>();
 	protected final Position startPosition;
 	protected final Position goalPosition;
