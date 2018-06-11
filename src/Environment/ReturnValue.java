@@ -6,11 +6,13 @@ public class ReturnValue {
 
 	private final double returnValue;
 	private final Position newPosition;
+	private final int direction;
 
-	public ReturnValue(double returnValue, Position newPosition) {
+	public ReturnValue(double returnValue, Position newPosition, int dir) {
 		super();
 		this.returnValue = returnValue;
 		this.newPosition = newPosition;
+		this.direction = dir;
 	}
 
 	public double getReturnValue() {
@@ -49,6 +51,10 @@ public class ReturnValue {
 		if (Double.doubleToLongBits(returnValue) != Double.doubleToLongBits(other.returnValue))
 			return false;
 		return true;
+	}
+
+	public int getDirection() {
+		return direction;
 	}
 
 }

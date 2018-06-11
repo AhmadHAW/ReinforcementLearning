@@ -28,49 +28,49 @@ public class EnvironmentTest {
 	@Test
 	public void testMoveOnNormalField() {
 		ReturnValue result = envNonDet.doStep(Position.getField(0, 0), 1);
-		assertEquals(new ReturnValue(0, Position.getField(1, 0)), result);
+		assertEquals(new ReturnValue(0, Position.getField(1, 0), 1), result);
 	}
 
 	// nonDetEnv move on Wall West.
 	@Test
 	public void testMoveOnWallWest() {
 		ReturnValue result = envNonDet.doStep(Position.getField(0, 0), 3);
-		assertEquals(new ReturnValue(0, Position.getField(0, 0)), result);
+		assertEquals(new ReturnValue(0, Position.getField(0, 0), 3), result);
 	}
 
 	// nonDetEnv move on Wall East.
 	@Test
 	public void testMoveOnWallEast() {
 		ReturnValue result = envNonDet.doStep(Position.getField(3, 0), 1);
-		assertEquals(new ReturnValue(0, Position.getField(3, 0)), result);
+		assertEquals(new ReturnValue(0, Position.getField(3, 0), 1), result);
 	}
 
 	// nonDetEnv move on Wall North.
 	@Test
 	public void testMoveOnWallNorth() {
 		ReturnValue result = envNonDet.doStep(Position.getField(0, 0), 0);
-		assertEquals(new ReturnValue(0, Position.getField(0, 0)), result);
+		assertEquals(new ReturnValue(0, Position.getField(0, 0), 0), result);
 	}
 
 	// nonDetEnv move on Wall North.
 	@Test
 	public void testMoveOnWallSouth() {
 		ReturnValue result = envNonDet.doStep(Position.getField(0, 3), 2);
-		assertEquals(new ReturnValue(0, Position.getField(0, 3)), result);
+		assertEquals(new ReturnValue(0, Position.getField(0, 3), 2), result);
 	}
 
 	// nonDetEnv move on cliff.
 	@Test
 	public void testMoveOnCliff() {
 		ReturnValue result = envNonDet.doStep(Position.getField(1, 2), 2);
-		assertEquals(new ReturnValue(-1.0, Position.getField(0, 3)), result);
+		assertEquals(new ReturnValue(-1.0, Position.getField(0, 3), 2), result);
 	}
 
 	// nonDetEnv move on cliff.
 	@Test
 	public void testMoveOnGoal() {
 		ReturnValue result = envNonDet.doStep(Position.getField(3, 2), 2);
-		assertEquals(new ReturnValue(1, Position.getField(3, 3)), result);
+		assertEquals(new ReturnValue(1, Position.getField(3, 3), 2), result);
 	}
 
 	// play with Det

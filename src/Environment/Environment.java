@@ -101,7 +101,7 @@ public class Environment {
 			newPosition = Position.getField(pos.getX() - 1, pos.getY());
 			break;
 		}
-		double returnValue = 0;
+		double returnValue = stepReward;
 		int x = newPosition.getX();
 		int y = newPosition.getY();
 		// wall
@@ -115,7 +115,7 @@ public class Environment {
 		} else if (actualMap[x][y] == 1) {
 			returnValue = goalReward;
 		}
-		return new ReturnValue(returnValue, newPosition);
+		return new ReturnValue(returnValue, newPosition, direction);
 
 	}
 }

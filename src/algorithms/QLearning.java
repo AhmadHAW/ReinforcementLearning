@@ -1,12 +1,8 @@
 package algorithms;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import Environment.Environment;
 import Environment.ReturnValue;
 import Fachwerte.Position;
-import Fachwerte.State;
 
 public class QLearning extends ReinforcementLearningAlgorithm {
 
@@ -27,10 +23,15 @@ public class QLearning extends ReinforcementLearningAlgorithm {
 	@Override
 	public boolean doEpisode() {
 		actualPosition = startPosition;
+		int steps = 0;
 		boolean result = false;
-		while (!actualPosition.equals(goalPosition)) {
+		while (!actualPosition.equals(goalPosition) && steps <= 100) {
+			++steps;
+
 			// ab hier unterscheiden sich QLearning und Sarsa
-			result = result || doStep();
+			if (doStep()) {
+				result = true;
+			}
 			// bis hier unterscheiden sich QLearning und Sarsa
 		}
 		return result;
@@ -62,21 +63,33 @@ public class QLearning extends ReinforcementLearningAlgorithm {
 				maxQValueNextState = value;
 			}
 		}
-		boolean result = updateQValue(actualPosition, maxDir, returnValue, maxQValueNextState, stepReward);
+		boolean result = updateQValue(actualPosition, maxDir, maxQValueNextState, returnValue);
 		actualPosition = nextPostition;
 		return result;
 	}
 
 	@Override
-	protected boolean doEpisodeWithoutTraining() {
+	public boolean doEpisodeWithoutTraining() {
 		actualPosition = startPosition;
-		boolean result = false;
-		while (!actualPosition.equals(goalPosition)) {
+		int steps = 0;
+		String path = "" + actualPosition;
+
+		while (!actualPosition.equals(goalPosition) && steps <= 100) {
 			// ab hier unterscheiden sich QLearning und Sarsa
-			result = result || doStepWithoutChanging();
+			if (doStepWithoutChanging()) {
+				return true;
+			}
+
+			path += "->" + actualPosition;
+			++steps;
 			// bis hier unterscheiden sich QLearning und Sarsa
 		}
-		return result;
+		if (bestSteps > steps) {
+			bestSteps = steps;
+			bestPath = path;
+		}
+		totalSteps += steps;
+		return false;
 	}
 
 	private boolean doStepWithoutChanging() {
@@ -106,22 +119,10 @@ public class QLearning extends ReinforcementLearningAlgorithm {
 			}
 		}
 		double oldQValue = qValues[maxDir];
-		boolean result = updateQValue(actualPosition, maxDir, returnValue, maxQValueNextState, stepReward);
+		boolean result = updateQValue(actualPosition, maxDir, maxQValueNextState, returnValue);
 		qValues[maxDir] = oldQValue;
 		actualPosition = nextPostition;
 		return result;
-	}
-
-	@Override
-	public void reset() {
-		mapOfAgent.clear();
-		actualPosition = startPosition;
-		bestResult = -Double.MAX_VALUE;
-		bestSteps = Integer.MAX_VALUE;
-		averageReward = 0;
-		averageSteps = 0;
-		bestPath = "";
-
 	}
 
 }

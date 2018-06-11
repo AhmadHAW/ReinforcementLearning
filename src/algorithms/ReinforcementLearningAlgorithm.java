@@ -18,16 +18,16 @@ public abstract class ReinforcementLearningAlgorithm {
 	protected final Position startPosition;
 	protected final Position goalPosition;
 	protected Position actualPosition;
-	protected double bestResult = -Double.MAX_VALUE;
-	protected int bestSteps = Integer.MAX_VALUE;
-	protected double averageReward = 0;
-	protected double averageSteps = 0;
-	protected String bestPath = "";
 	protected final Environment environment;
 	protected final double stepReward;
-
 	protected final int reapeatsUntilTrained;
 	protected final Random rd = new Random();
+
+	protected int bestSteps = Integer.MAX_VALUE;
+	protected int totalSteps = 0;
+	protected int totalEpisodesUntilTrained = 0;
+	protected int bestEpisodesUntilTrained = Integer.MAX_VALUE;
+	protected String bestPath = "";
 
 	public ReinforcementLearningAlgorithm(double gamma, double alpha, Position goalPosition, int repeats,
 			Environment env) {
@@ -41,13 +41,17 @@ public abstract class ReinforcementLearningAlgorithm {
 		stepReward = environment.getStepReward();
 	}
 
-	protected boolean updateQValue(Position position, int direction, double reward, double rewardOfNextState,
-			double stepReward) {
+	protected boolean updateQValue(Position position, int direction, double rewardOfNextState, double reward) {
 		double[] qValues = mapOfAgent.get(position).getqValues();
 		int[] positionArray = getPositionArray(qValues);
-		qValues[direction] = qValues[direction] + alpha * (stepReward + gamma * rewardOfNextState - qValues[direction]);
+		qValues[direction] = qValues[direction] + alpha * (reward + gamma * rewardOfNextState - qValues[direction]);
 		int[] positionArrayAfter = getPositionArray(qValues);
-		return positionArray.equals(positionArrayAfter);
+		for (int i = 0; i < 4; ++i) {
+			if (positionArray[i] != positionArrayAfter[i]) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private int[] getPositionArray(double[] qValues) {
@@ -108,20 +112,18 @@ public abstract class ReinforcementLearningAlgorithm {
 	}
 
 	public void train() {
-		int count = 0;
-		boolean isTrained = doEpisode();
-		System.out.println("doEpisode");
-		while (!isTrained || !isTrained()) {
-			doEpisode();
-			if ((count % 1000000) == 0) {
-				printMapOfAgent();
-			}
-			++count;
+		int episodesUntilTrained = 0;
+		boolean hasChanged = doEpisode();
+		while ((hasChanged || !isTrained()) && episodesUntilTrained <= 100) {
+			hasChanged = doEpisode();
+			++episodesUntilTrained;
 		}
-		// for (int i = 0; i < 100; ++i) {
-		// doEpisode();
-		// }
-		// printMapOfAgent();
+		if (episodesUntilTrained > 100) {
+			bestPath = "notSolveable";
+		} else if (bestEpisodesUntilTrained > episodesUntilTrained) {
+			bestEpisodesUntilTrained = episodesUntilTrained;
+		}
+		totalEpisodesUntilTrained += episodesUntilTrained;
 	}
 
 	public void printMapOfAgent() {
@@ -155,7 +157,9 @@ public abstract class ReinforcementLearningAlgorithm {
 		for (int y = 0; y < environment.getActualMap().length; ++y) {
 			String subResult = "";
 			for (int x = 0; x < environment.getActualMap().length; ++x) {
+				checkPositionInMap(Position.getField(x, y));
 				State actualState = mapOfAgent.get(Position.getField(x, y));
+
 				// obere Zeile
 				subResult = "";
 				for (int length = 0; length < maxLength; ++length) {
@@ -236,8 +240,46 @@ public abstract class ReinforcementLearningAlgorithm {
 
 	public abstract boolean doEpisode();
 
-	public abstract void reset();
+	public void reset() {
+		resetBoard();
+		bestSteps = Integer.MAX_VALUE;
+		totalSteps = 0;
+		totalEpisodesUntilTrained = 0;
+		bestEpisodesUntilTrained = Integer.MAX_VALUE;
+		bestPath = "";
+	}
 
-	protected abstract boolean doEpisodeWithoutTraining();
+	public void resetSteps() {
+		totalSteps = 0;
+		bestSteps = Integer.MAX_VALUE;
+		bestPath = "";
+	}
+
+	public void resetBoard() {
+		mapOfAgent.clear();
+		actualPosition = startPosition;
+	}
+
+	public abstract boolean doEpisodeWithoutTraining();
+
+	public int getBestSteps() {
+		return bestSteps;
+	}
+
+	public int getTotalSteps() {
+		return totalSteps;
+	}
+
+	public int getTotalEpisodesUntilTrained() {
+		return totalEpisodesUntilTrained;
+	}
+
+	public int getBestEpisodesUntilTrained() {
+		return bestEpisodesUntilTrained;
+	}
+
+	public String getBestPath() {
+		return bestPath;
+	}
 
 }
