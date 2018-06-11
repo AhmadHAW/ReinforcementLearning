@@ -12,12 +12,13 @@ public class QLearning extends ReinforcementLearningAlgorithm {
 
 	@Override
 	public boolean isTrained() {
-		for (int i = 0; i < reapeatsUntilTrained; ++i) {
+		boolean result = false;
+	    for (int i = 0; i < reapeatsUntilTrained; ++i) {
 			if (doEpisodeWithoutTraining()) {
-				return false;
+                result = true;
 			}
 		}
-		return true;
+		return result;
 	}
 
 	@Override
@@ -73,11 +74,12 @@ public class QLearning extends ReinforcementLearningAlgorithm {
 		actualPosition = startPosition;
 		int steps = 0;
 		String path = "" + actualPosition;
+		boolean result = false;
 
 		while (!actualPosition.equals(goalPosition) && steps <= 100) {
 			// ab hier unterscheiden sich QLearning und Sarsa
 			if (doStepWithoutChanging()) {
-				return true;
+				result = true;
 			}
 
 			path += "->" + actualPosition;
@@ -89,7 +91,7 @@ public class QLearning extends ReinforcementLearningAlgorithm {
 			bestPath = path;
 		}
 		totalSteps += steps;
-		return false;
+		return result;
 	}
 
 	private boolean doStepWithoutChanging() {
